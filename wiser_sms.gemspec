@@ -13,7 +13,4 @@ Gem::Specification.new do |spec|
   spec.homepage      = "https://github.com/kennethjohnbalgos/wiser_sms"
   spec.license       = "MIT"
   spec.files         = `git ls-files`.split($/)
-
-  spec.add_development_dependency "bundler", "~> 1.3"
-  spec.add_development_dependency "rake"
 end

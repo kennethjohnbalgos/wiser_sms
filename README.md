@@ -15,25 +15,31 @@ You can do normal gem installation for `wiser_sms`:
 or in your Gemfile:
 
 ```ruby
-gem 'wiser_sms', '~> 0.1.0'
+gem 'wiser_sms', '~> 0.1.1'
 ```
 
 Then restart your application.
 
 ## Usage
 
-### Request to send SMS
+### Security
+
+To avoid abuse, the `key` string parameter is now requred for all requests. It serves as a password to successfully send SMS.
+
+_Note: To request for password, email the purpose of usage to kennethjohnbalgos@gmail.com._
+
+### Request
 
 To send SMS for single receiver, pass the string 11-digit string mobile mobile number and message using the `send` method:
 
 ```ruby
-   WiserSms::Ph.send("091711292013", "You really did it!")
+   WiserSms::Ph.send("password_hash", "091711292013", "You really did it!")
 ```
 
 To send SMS for multiple receivers, pass the array of 11-digit string mobile number instead:
 
 ```ruby
-  WiserSms::Ph.send(["091711292013","091711302013"], "You guys really did it!")
+   WiserSms::Ph.send("password_hash", ["091711292013","091711302013"], "You guys really did it!")
 ```
 
 _Note: If you send the receiver's mobile number more than once, the message will still be sent once._
@@ -46,7 +52,7 @@ Here's an example:
 
 ```ruby
   {"091711292013" => true, "091711302013" => true, "123" => nil}
-````
+```
 
 #### Statuses
 
@@ -55,6 +61,7 @@ Response | Which Means
 (BOOL) true | Message Sent
 (BOOL) false | Sending Failed
 (NULL) nil | Invalid Mobile Number
+(INTEGER) 0 | Invalid Key/Password
 
 
 ## Contributing

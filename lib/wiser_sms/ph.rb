@@ -1,14 +1,18 @@
-require "open-uri"
+require 'openssl'
+require 'open-uri'
+require 'cgi'
+
 module WiserSms
   class Ph
-    URL_HOST    = "http://121.97.123.218:13013/cgi-bin/sendsms"
-    PASSWORD    = "kiko"
-    GLOBE_USER  = "globegateway"
-    GLOBE_MIN   = "09179409199"
-    SMART_USER  = "smartgateway"
-    SMART_MIN   = "09236357076"
-    SUN_USER  = "sungateway"
-    SUN_MIN   = "09328007170"
+    ADDRESS     = "121.97.123.218:13013"
+    VTR         = "9a3a70173b00fd265aa0a9b79163a5bb1f0e157b"
+    PASSWORD    = "zEQBwfcPD9RsB6OqBGLAVg==\n"
+    GLOBE_USER  = "ydbrX+oiguoLAWKAGsWHyg==\n"
+    GLOBE_MIN   = "9L9UYGiJiZku+m7lZgsGBg==\n"
+    SMART_USER  = "xOhnX3pSw02OJ6FzD2LyCQ==\n"
+    SMART_MIN   = "k9rGz/TMCiZZOmJT8S6yFg==\n"
+    SUN_USER    = "xIIXdSOgjnpGUT8Baqum9A==\n"
+    SUN_MIN     = "tigoy2Tzx6OiVKuyMZ5ViQ==\n"
 
     def self.get_network?(min)
       return nil if min.size != 11
@@ -28,54 +32,88 @@ module WiserSms
       return CGI::escape(msg)
     end
 
-    def self.send(mins, msg)
+    def self.send(key, mins, msg)
+      return 0 unless key.to_s.strip.present?
       mins = [mins] unless mins.is_a?(Array)
       escaped_msg = self.escape(msg)
       response = {}
       mins.each do |min|
         case self.get_network?(min)
         when "globe"
-          resp = self.send_globe(min, escaped_msg)
+          resp = self.send_globe(key, min, escaped_msg)
         when "smart"
-          resp = self.send_smart(min, escaped_msg)
+          resp = self.send_smart(key, min, escaped_msg)
         when "sun"
-          resp = self.send_sun(min, escaped_msg)
+          resp = self.send_sun(key, min, escaped_msg)
         else
           resp = nil
         end
+        return resp
         response[min] = resp
       end
       return response
     end
 
-    def self.send_globe(min, msg)
+    def self.send_globe(key, min, msg)
       return nil if min.size != 11
-      auth = "?username=#{GLOBE_USER}&password=#{PASSWORD}"
-      params = "&from=#{GLOBE_MIN}&to=#{min}&text=#{msg}"
-      return self.request(auth, params)
+      user = GLOBE_USER
+      pass = PASSWORD
+      src  = GLOBE_MIN
+      return self.request(key, user, pass, src, min, msg)
     end
 
-    def self.send_smart(min, msg)
+    def self.send_smart(key, min, msg)
       return nil if min.size != 11
-      auth = "?username=#{SMART_USER}&password=#{PASSWORD}"
-      params = "&from=#{SMART_MIN}&to=#{min}&text=#{msg}"
-      return self.request(auth, params)
+      user = SMART_USER
+      pass = PASSWORD
+      src  = SMART_MIN
+      return self.request(key, user, pass, src, min, msg)
     end
 
-    def self.send_sun(min, msg)
+    def self.send_sun(key, min, msg)
       return nil if min.size != 11
-      auth = "?username=#{SUN_USER}&password=#{PASSWORD}"
-      params = "&from=#{SUN_MIN}&to=#{min}&text=#{msg}"
-      return self.request(auth, params)
+      user = SUN_USER
+      pass = PASSWORD
+      src  = SUN_MIN
+      return self.request(key, user, pass, src, min, msg)
     end
 
-    def self.request(auth, params)
+    def self.request(key, username, password, source, destination, message)
       begin
-        response = open("#{URL_HOST}#{auth}#{params}").read
+        username  = self.validate(key, username)
+        password  = self.validate(key, password)
+        source    = self.validate(key, source)
+
+        url       = "http://#{ADDRESS}/cgi-bin/sendsms"
+        authorize = "?username=#{username}&password=#{password}&from=#{source}"
+        payload   = "&to=#{destination}&text=#{message}"
+        request   = "#{url}#{authorize}#{payload}"
+        response  = open(request).read
         return response.split(":")[0] == "0"
       rescue
-        return false
+        return 0
       end
+    end
+
+    def self.encrypt(key, str)
+      aes = OpenSSL::Cipher::Cipher.new('AES-256-CBC')
+      aes.encrypt
+      aes.key = key
+      aes.iv = VTR
+      cipher = aes.update(str)
+      cipher = aes.final
+      enc = [cipher].pack('m')
+      return enc
+    end
+
+    def self.validate(key, str)
+      aes = OpenSSL::Cipher::Cipher.new('AES-256-CBC')
+      aes.decrypt
+      aes.key = key
+      aes.iv = VTR
+      cipher = aes.update(str.unpack('m')[0])
+      cipher << aes.final
+      return cipher
     end
   end
 end
