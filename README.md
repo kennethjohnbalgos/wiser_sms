@@ -6,16 +6,24 @@ Medium Rare Outgoing SMS
 
 _WiserSms_ only support Rails >= 3.x.
 
+## Networks
+
+`WiserSms::Ph` only supports Globe Telecom, Smart Communications, and Sun Cellular networks.
+
+_..more to come.._
+
 ## Setup
 
-You can do normal gem installation for `wiser_sms`:
-
-    gem install wiser_sms
-
-or in your Gemfile:
+You can do normal gem installation in terminal:
 
 ```ruby
-gem 'wiser_sms', '~> 0.1.1'
+    $ gem install wiser_sms
+```
+
+or include it in your Gemfile:
+
+```ruby
+  gem 'wiser_sms', '~> 0.1.1'
 ```
 
 Then restart your application.
