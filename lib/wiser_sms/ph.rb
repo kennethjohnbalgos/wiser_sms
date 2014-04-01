@@ -6,13 +6,14 @@ module WiserSms
   class Ph
     ADDRESS     = "121.97.123.218:13013"
     VTR         = "9a3a70173b00fd265aa0a9b79163a5bb1f0e157b"
-    PASSWORD    = "zEQBwfcPD9RsB6OqBGLAVg==\n"
-    GLOBE_USER  = "ydbrX+oiguoLAWKAGsWHyg==\n"
-    GLOBE_MIN   = "9L9UYGiJiZku+m7lZgsGBg==\n"
-    SMART_USER  = "xOhnX3pSw02OJ6FzD2LyCQ==\n"
-    SMART_MIN   = "k9rGz/TMCiZZOmJT8S6yFg==\n"
-    SUN_USER    = "xIIXdSOgjnpGUT8Baqum9A==\n"
-    SUN_MIN     = "tigoy2Tzx6OiVKuyMZ5ViQ==\n"
+    PASSWORD    = "jsWsINhtCBVqka/CeHSJLg==\n"
+
+    GLOBE_USER  = "0gBTLoL+SeTKEcOS74FCHw==\n"
+    GLOBE_MIN   = "r3q08f7qs421w6DNcF07cw==\n"
+    SMART_USER  = "jeEfqqlyvd6B/t5xKd/9OA==\n"
+    SMART_MIN   = "oxJ9pMRwdm4M6hcQ/t515Q==\n"
+    SUN_USER    = "cFrmJHuQRHw8MhFKxqZpuQ==\n"
+    SUN_MIN     = "G+XBde142eMMppO2IPBYfw==\n"
 
     def self.get_network?(min)
       return nil if min.size != 11
