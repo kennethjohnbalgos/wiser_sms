@@ -23,7 +23,7 @@ You can do normal gem installation in terminal:
 or include it in your Gemfile:
 
 ```ruby
-  gem 'wiser_sms', '~> 0.1.1'
+  gem 'wiser_sms', '~> 0.1.2'
 ```
 
 Then restart your application.
